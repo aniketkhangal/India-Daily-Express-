@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Daily Express - Live National Network</title>
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --dark: #121212;
+            --light: #f8f9fa;
+            --border: #e0e0e0;
+            --accent: #1976d2;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        header {
+            background-color: var(--dark);
+            color: white;
+            padding: 15px 5%;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--primary);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            gap: 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            cursor: pointer;
+            letter-spacing: -0.5px;
+        }
+
+        /* Search Bar Styling */
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 320px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 8px 14px;
+            border-radius: 20px;
+            border: 1px solid #444;
+            background-color: #222;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            box-sizing: border-box;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            background-color: #333;
+            border-color: var(--primary);
+            box-shadow: 0 0 8px rgba(211, 47, 47, 0.5);
+        }
+
+        header nav {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        header nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: color 0.3s;
+        }
+
+        header nav a:hover {
+            color: var(--primary);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2.5fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 850px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Article Card & Animations */
+        .main-article {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .main-article.page-transition {
+            opacity: 0;
+            transform: translateY(12px);
+        }
+
+        .category-tag {
+            background-color: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .article-title {
+            font-size: 2.1rem;
+            margin: 0 0 15px 0;
+            line-height: 1.3;
+        }
+
+        .meta {
+            color: #666;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .article-hero-image {
+            width: 100%;
+            max-height: 420px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .article-content p {
+            line-height: 1.8;
+            font-size: 1.08rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .article-content a {
+            color: var(--accent);
+            text-decoration: underline;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: background 0.2s, color 0.2s;
+        }
+
+        .article-content a:hover {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .widget {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .widget h3 {
+            margin-top: 0;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            font-size: 1.15rem;
+        }
+
+        .news-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 550px;
+            overflow-y: auto;
+        }
+
+        .news-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .news-list li:last-child {
+            border-bottom: none;
+        }
+
+        .news-list a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: block;
+            line-height: 1.4;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .news-list a:hover {
+            color: var(--primary);
+        }
+
+        .news-list .sub-info {
+            font-size: 0.78rem;
+            color: #777;
+            margin-top: 4px;
+        }
+
+        /* Search Results Grid View */
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .search-card {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .search-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        }
+
+        .search-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .search-card-body {
+            padding: 15px;
+        }
+
+        .search-card-body h4 {
+            margin: 8px 0;
+            font-size: 1rem;
+            line-height: 1.3;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 onclick="loadArticle('india-1')">🇮🇳 India Daily Express</h1>
+        
+        <!-- Live Search Input Field -->
+        <div class="search-box">
+            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="🔍 Search news by keyword...">
+        </div>
+
+        <nav>
+            <a onclick="loadArticle('india-1')">National</a>
+            <a onclick="loadArticle('india-2')">AI & Tech</a>
+            <a onclick="loadArticle('india-3')">Space</a>
+            <a onclick="loadArticle('india-4')">Economy</a>
+            <a onclick="loadArticle('india-6')">Railways</a>
+            <a onclick="loadArticle('india-9')">Green Energy</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Main Article Container -->
+        <main class="main-article" id="article-view">
+            <!-- Dynamic News Content or Search Results will appear here -->
+        </main>
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="widget">
+                <h3>🔥 All 12 Trending Stories</h3>
+                <ul class="news-list" id="trending-list"></ul>
+            </div>
+            
+            <div class="widget">
+                <h3>📌 Related Coverage</h3>
+                <ul class="news-list" id="related-list"></ul>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        const articles = {
+            'india-1': {
+                id: 'india-1',
+                title: "India Outlines Vision 2030: Grand Infrastructure & Smart Cities Expansion Launched",
+                category: "National",
+                date: "Today, 2026",
+                author: "Rajesh Sharma",
+                image: "https://expressbuildersltd.com/blog/wp-content/uploads/2026/06/Bullet-Train-in-India.jpg",
+                content: `
+                    <p>New Delhi — The Government of India today unveiled a comprehensive multi-billion-dollar infrastructure framework aimed at connecting rural agrarian hubs directly to major economic corridors. High-speed rail networks, modern freight corridors, and fully automated logistics parks form the backbone of this transformation program.</p>
+                    <p>State ministers emphasized that this blueprint will reduce cross-country shipping times by over forty percent within the next three years. In tandem with transport development, India is doubling down on green mandates powered by <a onclick="loadArticle('india-9')">mega-solar panel complexes across western corridors</a> to provide uninterrupted power to industrial zones.</p>
+                    <p>Technological execution is playing a pivotal role in this infrastructure drive. Smart municipal systems now integrate <a onclick="loadArticle('india-2')">indigenously designed supercomputing AI algorithms</a> for real-time traffic and power distribution management across metro regions.</p>
+                    <p>Economic analysts across the globe have reacted with strong enthusiasm toward the announcement. Financial institutions project that this infrastructure push will drive market valuations to new peaks, closely mirroring the news where <a onclick="loadArticle('india-4')">Indian equity indexes surged to historic record heights</a>.</p>
+                `,
+                related: ['india-2', 'india-6', 'india-9']
+            },
+            'india-2': {
+                id: 'india-2',
+                title: "Bengaluru Tech Summit Highlights India's Leap in Indigenous Supercomputing & AI",
+                category: "AI & Tech",
+                date: "Today, 2026",
+                author: "Priya Nair",
+                image: "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcQiTMcNPw6TRdFfVUEkdm2B_TvGJ0GB4KaCysqaLUHWXwIoFC1QAgnH2DxES_TTrOqeu-02aQvcFg43jaA",
+                content: `
+                    <p>Bengaluru — India's technological landscape reached a historic milestone today as domestic tech firms unveiled a new generation of ultra-efficient supercomputers. Engineered locally under public-private technology partnerships, these new computing processing chips deliver state-of-the-art performance.</p>
+                    <p>The breakthrough software suite driving these processors is designed specifically to optimize complex operational systems. High-level applications already include real-time traffic automation, climate monitoring, and power distribution across expanding urban centers envisioned in <a onclick="loadArticle('india-1')">the national Vision 2030 infrastructure program</a>.</p>
+                    <p>Furthermore, aerospace engineers have begun leveraging these advanced computing clusters to simulate orbital mechanics. Key telemetry systems powering <a onclick="loadArticle('india-3')">ISRO's deep-space satellite launch rockets</a> were simulated directly on top of this newly established domestic framework.</p>
+                    <p>Advanced laboratories across institutes are also utilizing these high-performance compute nodes to build next-generation machinery, including <a onclick="loadArticle('india-10')">IIT-designed human-robotics systems for manufacturing plants</a>.</p>
+                `,
+                related: ['india-1', 'india-3', 'india-10']
+            },
+            'india-3': {
+                id: 'india-3',
+                title: "ISRO Launch Center Successfully Orbit Next-Gen Satellite Assembly",
+                category: "Space",
+                date: "Today, 2026",
+                author: "Dr. Vikram Kulkarni",
+                image: "https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRYr9Ann2M1-bcTAYNcIo4ZbMRM0pebVKg1F6Qj1oXCWhbL1fn1-1HCXLwS7KmixxBDq1-YLEVKL3VXF0Q",
+                content: `
+                    <p>Sriharikota — The Indian Space Research Organisation (ISRO) successfully launched its heavy-lift rocket vehicle carrying next-generation communication and oceanographic observation payloads into orbit early this morning.</p>
+                    <p>Mission control confirmed that all orbital insertion parameters were achieved flawlessly. A major contributor to operational readiness was the integration of <a onclick="loadArticle('india-2')">Bengaluru-developed high-speed AI telemetry systems</a>, which computed complex atmospheric trajectory profiles in real time.</p>
+                    <p>This orbital deployment serves as a strategic precursor for interplanetary initiatives, including <a onclick="loadArticle('india-12')">the upcoming Chandrayaan lunar rover subsurface scientific probe</a> scheduled for deployment later this year.</p>
+                    <p>Privatization policies within the space ecosystem continue to pay dividends, as over thirty percent of structural components were manufactured by private aerospace startups backed by <a onclick="loadArticle('india-4')">surging foreign venture capital inflows into India</a>.</p>
+                `,
+                related: ['india-2', 'india-12', 'india-4']
+            },
+            'india-4': {
+                id: 'india-4',
+                title: "Sensex & Nifty Hit All-Time Highs as Foreign Direct Investment Inflows Surge",
+                category: "Economy",
+                date: "Today, 2026",
+                author: "Ananya Iyer",
+                image: "https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcRYtV9zZgbTmcUq5LjEwwJjo7i0Rmm67q9rj5pH_fr0ezmjl5jTQ5nJbLYJcecKcXoZfKzCpjG8arkgyO0",
+                content: `
+                    <p>Mumbai — Indian stock benchmarks Sensex and Nifty touched fresh record peaks during trading today, fueled by heavy buying in manufacturing, green technology, and digital financial service stocks.</p>
+                    <p>Institutional investors pointed to long-term macroeconomic stability and massive capital allocations toward national projects like <a onclick="loadArticle('india-1')">the Vision 2030 smart cities infrastructure program</a> as primary growth drivers.</p>
+                    <p>Strong financial sector performance was further reinforced by fiscal commentary from leadership at <a onclick="loadArticle('india-11')">the Reserve Bank of India on monetary stability</a> and widespread digital transaction adoption powered by <a onclick="loadArticle('india-5')">the nationwide Unified Payments Interface (UPI) network</a>.</p>
+                    <p>Market strategists anticipate foreign direct investments to remain elevated throughout upcoming quarters, particularly within high-growth export segments such as electric mobility and green energy equipment manufacturing.</p>
+                `,
+                related: ['india-1', 'india-5', 'india-11']
+            },
+            'india-5': {
+                id: 'india-5',
+                title: "Unified Payments Interface (UPI) Crosses Record Monthly Digital Transaction Milestones",
+                category: "Economy",
+                date: "Today, 2026",
+                author: "Siddharth Verma",
+                image: "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcR4HN1DkpUGrWOojqlJtLU-oL62VOVDM8cGucnCW787w6SGK9QRDxajJdIPViNFTCYH9InhA9BpXGrRERg",
+                content: `
+                    <p>New Delhi — India’s flagship digital payment framework, UPI, has registered record-breaking transaction volumes this month, solidifying its place as a cornerstone of the nation’s cashless economy.</p>
+                    <p>Small merchants and retail buyers across tier-2 and tier-3 cities accounted for over sixty percent of total transaction growth. Financial technology leaders noted that this scale has been enabled by reliable monetary frameworks established alongside <a onclick="loadArticle('india-11')">Reserve Bank of India regulatory policies</a>.</p>
+                    <p>The success of instant mobile payments has catalyzed rapid growth across e-commerce sectors, leading to increased capital allocations from institutional investors driving <a onclick="loadArticle('india-4')">surging valuations across Indian financial stock markets</a>.</p>
+                    <p>Global central banks across multiple partner nations are currently collaborating with Indian technical teams to integrate cross-border UPI remittance mechanisms for foreign trade.</p>
+                `,
+                related: ['india-4', 'india-11', 'india-2']
+            },
+            'india-6': {
+                id: 'india-6',
+                title: "Indian Railways Expands Vande Bharat Fleet with Modern Semi-High-Speed Corridors",
+                category: "Railways",
+                date: "Today, 2026",
+                author: "Amitabh Roy",
+                image: "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcSgUugFvjbuDkHyObWsonT_UFjDYg3KyGGr5mzz_O_W1Mz_BSwIhKgeBuU-aWz7eu7iM2UutmveNV0KtyM",
+                content: `
+                    <p>New Delhi — Indian Railways officially flagged off ten new Vande Bharat Express trainsets today, expanding high-speed intercity passenger connectivity across key industrial and tourism routes.</p>
+                    <p>These indigenously manufactured trains feature active suspension systems, aerodynamic trainsets, and regenerative braking technology that feeds electricity back into power grids connected to <a onclick="loadArticle('india-9')">regional solar generation plants</a>.</p>
+                    <p>Railways Ministry officials stated that modern passenger corridors form a key component of <a onclick="loadArticle('india-1')">the national Vision 2030 transit master plan</a>, aimed at reducing urban highway congestion.</p>
+                    <p>Simultaneously, engineering teams are testing automated collision-avoidance systems powered by <a onclick="loadArticle('india-2')">indigenous AI sensor hardware developed in Bengaluru hubs</a> to ensure safety across all weather conditions.</p>
+                `,
+                related: ['india-1', 'india-9', 'india-2']
+            },
+            'india-7': {
+                id: 'india-7',
+                title: "Precision Farming Takeoff: Drone Technology & Agrotech Modernize Indian Crop Yields",
+                category: "National",
+                date: "Today, 2026",
+                author: "Kavita Deshmukh",
+                image: "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcS1hrayGe_uq3xivwDv13lld0pAIpFE1eqG-HMLWpeVYpexmlcG7reo8TohRWFaBCRU3OT841gE5BvDGxI",
+                content: `
+                    <p>Chandigarh — Agricultural communities across Northern and Western India are reporting record crop productivity following widespread adoption of agricultural drone spraying networks and IoT soil sensors.</p>
+                    <p>Automated aerial drones deliver micro-doses of fertilizers and water directly to crop roots, cutting chemical waste by forty percent while safeguarding local groundwater resources.</p>
+                    <p>Agritech startups building these autonomous systems are closely collaborating with research teams at <a onclick="loadArticle('india-10')">IIT technology robotics laboratories</a> to develop affordable farm automation tools.</p>
+                    <p>Furthermore, digital logistics platforms now connect farmers directly with urban markets using freight corridors built under <a onclick="loadArticle('india-1')">the national Vision 2030 infrastructure program</a>.</p>
+                `,
+                related: ['india-10', 'india-1', 'india-5']
+            },
+            'india-8': {
+                id: 'india-8',
+                title: "Electric Vehicle Manufacturing Parks Open Across Key Industrial Hubs",
+                category: "Green Energy",
+                date: "Today, 2026",
+                author: "Sanjay Mehta",
+                image: "https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcRROrnvEmuP3KT4yHKqJ-vvyS3iuTLW-XafUc1c-9HVDndt0FoQjYrs4nxB6X3OZneiKBHm3a_2oFjhqwA",
+                content: `
+                    <p>Chennai — Automotive manufacturing parks dedicated entirely to electric buses, commercial delivery vans, and passenger EVs officially commenced full-scale operations today.</p>
+                    <p>These gigafactories specialize in solid-state lithium chemistry batteries and localized motor assembly, reducing reliance on imported component supply chains.</p>
+                    <p>Municipal public transit authorities have already placed major fleet orders for zero-emission buses to service routes alongside <a onclick="loadArticle('india-6')">newly established Vande Bharat railway corridors</a>.</p>
+                    <p>Clean energy for these EV assembly plants is drawn directly from nearby utility-scale projects, such as <a onclick="loadArticle('india-9')">large-scale solar energy farms spread across Western India</a>.</p>
+                `,
+                related: ['india-9', 'india-6', 'india-4']
+            },
+            'india-9': {
+                id: 'india-9',
+                title: "India Expands Utility-Scale Solar Arrays to Power Industrial Corridors",
+                category: "Green Energy",
+                date: "Today, 2026",
+                author: "Pooja Hegde",
+                image: "https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcSx8ETwKZhA7p3ibnqpf6a-rS2lVHyw-FieoYPKAX7zzuS_YtuDoK0NTTqLM2SY3PkwmOmaqdtoXE7hXZs",
+                content: `
+                    <p>Ahmedabad — Massive photovoltaic solar energy fields reached full grid integration today, adding gigawatts of clean electricity capacity to India's national power grid.</p>
+                    <p>Equipped with dual-axis solar tracking technology, these parks maximize sunlight capture from dawn to dusk, providing affordable power to energy-intensive industries.</p>
+                    <p>Energy distribution across states is managed by <a onclick="loadArticle('india-2')">Bengaluru-engineered smart grid AI processors</a> that balance load supply during peak demand hours.</p>
+                    <p>This renewable electricity surge powers major clean transit initiatives, including heavy <a onclick="loadArticle('india-8')">electric vehicle manufacturing gigafactories</a> and modernized electrification corridors across <a onclick="loadArticle('india-6')">Indian Railways networks</a>.</p>
+                `,
+                related: ['india-2', 'india-8', 'india-6']
+            },
+            'india-10': {
+                id: 'india-10',
+                title: "IIT Research Labs Unveil Advanced Humanoid Robotics for Smart Manufacturing",
+                category: "AI & Tech",
+                date: "Today, 2026",
+                author: "Dr. Alok Chatterjee",
+                image: "https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcQAoLqnTWL5vfgHlvXk4siT4FMAWr_L8BAANtwMnBwF_zjujgRBasSzdumlNnOMBpKRuM4TLEk3Q3op0vw",
+                content: `
+                    <p>New Delhi — Engineering researchers across Indian Institutes of Technology (IITs) demonstrated advanced robotic assistants engineered for high-precision industrial assembly lines.</p>
+                    <p>Featuring haptic force feedback, computer vision cameras, and neural network navigation, these robots perform complex tasks safely alongside human technicians.</p>
+                    <p>The foundational neural networks operating these machine vision algorithms run on <a onclick="loadArticle('india-2')">indigenous supercomputing server clusters developed in Bengaluru</a>.</p>
+                    <p>Commercial manufacturing hubs, including <a onclick="loadArticle('india-8')">electric vehicle battery assembly facilities</a> and <a onclick="loadArticle('india-7')">agrotech drone production centers</a>, are slated to integrate these robotic units within the coming year.</p>
+                `,
+                related: ['india-2', 'india-8', 'india-7']
+            },
+            'india-11': {
+                id: 'india-11',
+                title: "Reserve Bank of India Outlines Monetary Stability Framework for Digital Economy",
+                category: "Economy",
+                date: "Today, 2026",
+                author: "Manish Joshi",
+                image: "https://encrypted-tbn2.gstatic.com/licensed-image?q=tbn:ANd9GcR2C3BMjPZk4cPpXGZAhbDqhZ0uaM7-Wd0nTzF3N8Qv2QWy-Fu8ucg9vKwBgjqn65AZQwIWMlRTdzoI_E8",
+                content: `
+                    <p>Mumbai — The Reserve Bank of India (RBI) issued policy guidelines designed to maintain liquidity, control inflation, and safeguard digital financial systems against global volatility.</p>
+                    <p>Central bank leadership emphasized that strong digital infrastructure has fortified domestic markets against macroeconomic pressures faced by international peers.</p>
+                    <p>A key highlights reel praised the security and reliability of <a onclick="loadArticle('india-5')">the Unified Payments Interface (UPI) system</a>, which now processes billions of real-time transactions monthly.</p>
+                    <p>This monetary stability framework has provided foreign investors with high confidence, contributing directly to <a onclick="loadArticle('india-4')">surging market indices across Indian equity exchanges</a>.</p>
+                `,
+                related: ['india-5', 'india-4', 'india-1']
+            },
+            'india-12': {
+                id: 'india-12',
+                title: "Chandrayaan Scientific Probe Prepares for Subsurface Lunar Mining Analysis",
+                category: "Space",
+                date: "Today, 2026",
+                author: "Sunita Rao",
+                image: "https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcTf0pdJyCIQVqkRsspcCikLrEbWYUr1J9X5mbypW8_LIOpZW9n_Icg8KGoxNWZTLmEtQjRGw4OtotFI_cs",
+                content: `
+                    <p>Bengaluru — ISRO space scientists revealed telemetry data from the Chandrayaan lunar research program, demonstrating successful subsurface soil drill simulations on simulated regolith terrain.</p>
+                    <p>The scientific rover payload contains spectrometer arrays capable of analyzing water-ice molecules and volatile mineral deposits beneath the lunar polar crust.</p>
+                    <p>Launch systems transporting these specialized exploration tools depend on heavy rocket boosters recently flight-tested at <a onclick="loadArticle('india-3')">ISRO's Sriharikota launch complex</a>.</p>
+                    <p>Mission calculations and real-time sensor processing for the lunar rover were developed in partnership with <a onclick="loadArticle('india-2')">Bengaluru high-speed computing centers</a> and <a onclick="loadArticle('india-10')">IIT robotics research teams</a>.</p>
+                `,
+                related: ['india-3', 'india-2', 'india-10']
+            }
+        };
+
+        // Render Article Function
+        function loadArticle(articleId) {
+            const article = articles[articleId];
+            if (!article) return;
+
+            // Clear search bar if a specific article is chosen
+            document.getElementById('searchInput').value = '';
+
+            const articleView = document.getElementById('article-view');
+            articleView.classList.add('page-transition');
+
+            setTimeout(() => {
+                articleView.innerHTML = `
+                    <span class="category-tag">${article.category}</span>
+                    <h2 class="article-title">${article.title}</h2>
+                    <div class="meta">By <b>${article.author}</b> • Published: ${article.date}</div>
+                    <img src="${article.image}" alt="${article.title}" class="article-hero-image" />
+                    <div class="article-content">${article.content}</div>
+                `;
+
+                // Update Sidebar Related
+                const relatedList = document.getElementById('related-list');
+                relatedList.innerHTML = article.related.map(relId => {
+                    const rel = articles[relId];
+                    return `
+                        <li>
+                            <a onclick="loadArticle('${rel.id}')">${rel.title}</a>
+                            <div class="sub-info">${rel.category} • ${rel.date}</div>
+                        </li>
+                    `;
+                }).join('');
+
+                // Update Sidebar Headlines
+                renderSidebarTrending();
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                articleView.classList.remove('page-transition');
+            }, 250);
+        }
+
+        function renderSidebarTrending() {
+            const trendingList = document.getElementById('trending-list');
+            trendingList.innerHTML = Object.keys(articles).map(key => {
+                const item = articles[key];
+                return `
+                    <li>
+                        <a onclick="loadArticle('${item.id}')">${item.title}</a>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        // LIVE SEARCH LOGIC
+        function handleSearch() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const articleView = document.getElementById('article-view');
+
+            if (query === '') {
+                // Return to default article if search input is cleared
+                loadArticle('india-1');
+                return;
+            }
+
+            // Filter articles matching search query
+            const matchedArticles = Object.values(articles).filter(art => {
+                return art.title.toLowerCase().includes(query) ||
+                       art.category.toLowerCase().includes(query) ||
+                       art.content.toLowerCase().includes(query);
+            });
+
+            // Render Search Results View
+            if (matchedArticles.length > 0) {
+                articleView.innerHTML = `
+                    <h2>🔍 Search Results (${matchedArticles.length})</h2>
+                    <p>Articles containing keyword "<b>${query}</b>":</p>
+                    <div class="search-results-grid">
+                        ${matchedArticles.map(art => `
+                            <div class="search-card" onclick="loadArticle('${art.id}')">
+                                <img src="${art.image}" alt="${art.title}">
+                                <div class="search-card-body">
+                                    <span class="category-tag" style="font-size:0.65rem;">${art.category}</span>
+                                    <h4>${art.title}</h4>
+                                    <div class="meta" style="border:none; margin:0; padding:0;">${art.date}</div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                articleView.innerHTML = `
+                    <h2>🔍 Search Results</h2>
+                    <p style="color: #777; margin-top: 20px;">No news articles found matching "<b>${query}</b>". Try searching for <i>ISRO</i>, <i>UPI</i>, <i>AI</i>, or <i>Railways</i>.</p>
+                `;
+            }
+        }
+
+        // Initial Load
+        loadArticle('india-1');
+    </script>
+</body>
+</html>
